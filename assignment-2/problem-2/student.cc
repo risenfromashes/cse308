@@ -3,23 +3,43 @@
 
 #include <fmt/format.h>
 
-Student::Student(int id, std::shared_ptr<ExamMediator> cont) : id_(id) {
-  if (cont) {
-    controller_ = cont;
-  }
+Student::Student(int id, std::shared_ptr<ExamMediator> cont)
+    : id_(id), controller_(cont) {}
+
+void Student::receive_result(ResultInfo result) {
+  fmt::print("[Student #{}] Received {} in course #{}\n", id_, result.mark,
+             result.course_id);
+  marks_[result.course_id] = result.mark;
 }
 
-void Student::receive_result(ResultInfo event) {}
+void Student::receive_reresult(ResultInfo result) {
+  if (!marks_.contains(result.course_id)) {
+    fmt::print("Error: Invalid re-examination result received\n");
+    return;
+  }
+  float old_mark = marks_[result.course_id];
+  if (old_mark != result.mark) {
+    fmt::print("[Student #{}] Mark in course #{} updated ({} => {})\n", id_,
+               result.course_id, old_mark, result.mark);
+
+    marks_[result.course_id] = result.mark;
+  } else {
+    fmt::print(
+        "[Student #{}] Mark in course #{} remained same after re-examination\n",
+        id_, result.course_id);
+  }
+}
 
 void Student::request_reexamination(int course_id) {
   if (!marks_.contains(course_id)) {
     fmt::print("Error: Invalid course Id provided\n");
   } else {
-    fmt::print("Re-examine requested from student #{} for course #{}\n", id_,
+    fmt::print("[Student #{}] Re-examine requested for course #{}\n", id_,
                course_id);
+
     auto cont = controller_.lock();
     if (cont) {
-      controller_.lock()->notify(shared_from_this(), {.course_id = course_id});
+      cont->notify(this, {.course_id = course_id});
     } else {
       fmt::print("Error: No mediator/controller set\n");
     }

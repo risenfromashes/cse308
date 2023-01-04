@@ -9,9 +9,11 @@
 class Student : std::enable_shared_from_this<Student> {
   public:
     Student(int id, std::shared_ptr<ExamMediator> cont = nullptr);
+    int id() { return id_; }
     void receive_result(ResultInfo result);
+    void receive_reresult(ResultInfo result);
     void request_reexamination(int course_id);
-
+    
   private:
     /* student id */
     int id_;
