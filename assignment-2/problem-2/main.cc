@@ -33,7 +33,7 @@ int main() {
   }
 
   for (int i = 1; i <= n_teachers; i++) {
-    auto teacher = teachers[i - 1];
+    auto teacher = teachers[i];
     for (int j = 1; j <= n_students; j++) {
       // associate course with teacher
       // and generate a script for each student for each course (teacher)
@@ -44,7 +44,7 @@ int main() {
   }
 
   for (;;) {
-    fmt::print("Enter 'r' to request re-examination and 'q' to quit.");
+    fmt::print("Enter 'r' to request re-examination and 'q' to quit.\n");
 
     char ch;
     std::cin >> ch;
@@ -54,7 +54,7 @@ int main() {
       break;
     }
     if (ch != 'r') {
-      fmt::print("Invalid command '{}'", ch);
+      fmt::print("Invalid command '{}'\n", ch);
       continue;
     }
 

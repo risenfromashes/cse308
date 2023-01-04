@@ -16,7 +16,7 @@ void ExamController::notify(Student *sender, ReexamineRequestEvent event) {
   }
 
   auto examiner = examiners_[event.course_id];
-  auto script = &scripts_[{event.course_id, sender->id()}];
+  auto script = &scripts_.at({event.course_id, sender->id()});
 
   examiner->reexamine(script);
 }
@@ -33,7 +33,8 @@ void ExamController::notify(Teacher *sender, ReexamineResultEvent event) {
                "after re-examination\n",
                event.student_id, event.result.course_id);
   } else {
-    fmt::print("[Exam Controller] Mark changed ({} => {}) for student #{} in "
+    fmt::print("[Exam Controller] Mark changed ({:>5.1f} => {:>5.1f}) for "
+               "student #{} in "
                "course #{} "
                "after re-examination\n",
                event.prev_mark, event.result.mark, event.student_id,
@@ -45,12 +46,16 @@ void ExamController::notify(Teacher *sender, ReexamineResultEvent event) {
 
 void ExamController::notify(Teacher *sender, ResultEvent event) {
   for (auto &script : event.scripts) {
-    fmt::print("[Exam Controller] Student #{} obtained {} in course #{}\n",
-               script.student_id(), script.total(), script.course_id());
+    fmt::print(
+        "[Exam Controller] Student #{} obtained {:>5.1f} in course #{}\n",
+        script.student_id(), script.total(), script.course_id());
 
     examiners_[script.course_id()] = sender->shared_from_this();
-    scripts_[{script.course_id(), script.student_id()}] = std::move(script);
+    scripts_.emplace(std::make_pair(script.course_id(), script.student_id()),
+                     std::move(script));
   }
+  check();
+  publish_results();
 }
 
 void ExamController::check() {
@@ -68,7 +73,7 @@ void ExamController::check() {
       script.set_total(actual_total);
 
       fmt::print("[Exam Controller] Correction of marks for student #{} in "
-                 "course #{} ({} => {})\n",
+                 "course #{} ({:>5.1f} => {:>5.1f})\n",
                  script.student_id(), script.course_id(), old_total,
                  actual_total);
     }

@@ -1,5 +1,7 @@
 #include "script.h"
 #include "resultinfo.h"
+#include <cmath>
+#include <ctime>
 #include <random>
 
 Script::Script(int cid, int sid)
@@ -8,22 +10,28 @@ Script::Script(int cid, int sid)
 void Script::evaluate(int teacher_id) {
   examiner_id_ = teacher_id;
 
-  using dist_t = std::uniform_real_distribution<float>;
-  static std::mt19937 rng;
+  using uniform_t = std::uniform_real_distribution<float>;
+  using normal_t = std::normal_distribution<float>;
 
-  static dist_t dist_marks(0, total_marks / question_count);
-  static dist_t dist_error(0, 1);
+  const float marks_per_question = total_marks / question_count;
+  static std::random_device rd;
+  static std::mt19937 rng(rd());
+
+  static normal_t dist_marks(0.7 * marks_per_question,
+                             0.2 * marks_per_question);
+
+  static uniform_t dist_error(0, 1);
+  static normal_t dist_total(1, 0.2);
 
   for (int i = 0; i < question_count; i++) {
-    marks_[i] = dist_marks(rng);
+    marks_[i] = std::min(dist_marks(rng), marks_per_question);
   }
 
   auto actual_total = calc_total();
-  dist_t dist_total(0, actual_total);
 
   /* 55% probability of mistake + (at least once every 5 id) */
   if (dist_error(rng) < 0.55 || id_ % 5 == 0) {
-    total_ = dist_total(rng);
+    total_ = std::min(dist_total(rng) * actual_total, total_marks);
   } else {
     total_ = actual_total;
   }
