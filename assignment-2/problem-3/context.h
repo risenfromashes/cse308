@@ -3,7 +3,10 @@
 #include <memory>
 #include <unordered_map>
 
-class State;
+#include <cassert>
+
+#include "state.h"
+
 class Context;
 
 template <class T>
@@ -14,15 +17,21 @@ class Context {
 public:
   template <ValidState T> T *get_state_instance() {
     const char *state_name = typeid(T).name();
-    auto [itr, inserted] = state_instances_.try_emplace(state_name, this);
-    if (inserted) {
-      return itr->second.get();
+    State *state;
+    if (state_instances_.contains(state_name)) {
+      state = state_instances_.at(state_name).get();
     } else {
-      return state_instances_.at(state_name);
+      auto [itr, inserted] =
+          state_instances_.emplace(state_name, std::make_unique<T>(this));
+      assert(inserted);
+      state = itr->second.get();
     }
+    state->reset();
+    return dynamic_cast<T *>(state);
   }
 
   State *current_state() { return state_; }
+  void next_state(State *state) { state_ = state; }
 
 protected:
   /* state registry to only initialize states once */

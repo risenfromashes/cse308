@@ -1,8 +1,15 @@
 #pragma once
 
-#include "vending_machine.h"
+class Context;
+class VendingMachine;
 
 class State {
+public:
+  virtual ~State() = default;
+
+  /* default reset behavour: do nothing */
+  virtual void reset() {}
+
 protected:
   State(Context *context);
 
@@ -11,32 +18,32 @@ protected:
 
 class VendingMachineState : public State {
 public:
-  /* default implementations */
-
-  // don't accept money
-  virtual void add_money(float money);
-  // don't provide return
-  virtual void get_return();
-  // don't return product
-  virtual void get_product();
-  // don't accept refill
-  virtual void refill_product();
-
-protected:
-  VendingMachine *context();
   virtual ~VendingMachineState() = default;
 
-  VendingMachineState(VendingMachine *vm);
+  /* default implementations */
+  /* refuse everything */
+
+  // assume out of stock
+  virtual void add_money(float money);
+  // assume out of stock
+  virtual void get_return();
+  // assume out of stock
+  virtual void get_product();
+  // assume in stock
+  virtual void refill_product(unsigned int quantity);
+
+protected:
+  VendingMachineState(Context *context);
+  VendingMachine *context();
 };
 
 class StartState : public VendingMachineState {
 public:
+  StartState(Context *context);
   void add_money(float money) override;
   void get_return() override;
   void get_product() override;
-  void refill_product() override;
-
-  void reset();
+  void reset() override;
 
 private:
   float paid_amount_;
@@ -44,18 +51,19 @@ private:
 
 class PaidState : public VendingMachineState {
 public:
+  PaidState(Context *context);
   void add_money(float money) override;
   void get_return() override;
   void get_product() override;
-  void refill_product() override;
 };
 
-class OverpaidState : public VendingMachineState {
+class OverPaidState : public VendingMachineState {
 public:
+  OverPaidState(Context *context);
   void add_money(float money) override;
   void get_return() override;
   void get_product() override;
-  void refill_product() override;
+  void reset() override;
 
   void set_return(float amount);
 
@@ -65,8 +73,6 @@ private:
 
 class VacantState : public VendingMachineState {
 public:
-  void add_money(float money) override;
-  void get_return() override;
-  void get_product() override;
-  void refill_product() override;
+  VacantState(Context *context);
+  void refill_product(unsigned int quantity) override;
 };
