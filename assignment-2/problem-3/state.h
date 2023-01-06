@@ -14,7 +14,7 @@ public:
   /* default implementations */
 
   // don't accept money
-  virtual void add_money();
+  virtual void add_money(float money);
   // don't provide return
   virtual void get_return();
   // don't return product
@@ -31,23 +31,20 @@ protected:
 
 class StartState : public VendingMachineState {
 public:
-  void add_money() override;
+  void add_money(float money) override;
   void get_return() override;
   void get_product() override;
   void refill_product() override;
-};
 
-class UnpaidState : public VendingMachineState {
-public:
-  void add_money() override;
-  void get_return() override;
-  void get_product() override;
-  void refill_product() override;
+  void reset();
+
+private:
+  float paid_amount_;
 };
 
 class PaidState : public VendingMachineState {
 public:
-  void add_money() override;
+  void add_money(float money) override;
   void get_return() override;
   void get_product() override;
   void refill_product() override;
@@ -55,15 +52,20 @@ public:
 
 class OverpaidState : public VendingMachineState {
 public:
-  void add_money() override;
+  void add_money(float money) override;
   void get_return() override;
   void get_product() override;
   void refill_product() override;
+
+  void set_return(float amount);
+
+private:
+  float return_amount_;
 };
 
 class VacantState : public VendingMachineState {
 public:
-  void add_money() override;
+  void add_money(float money) override;
   void get_return() override;
   void get_product() override;
   void refill_product() override;
