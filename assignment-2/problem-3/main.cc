@@ -11,12 +11,12 @@ int main() {
   for (;;) {
     vending_machine.status();
 
-    fmt::print("Press a button [1-8]\n");
-    fmt::print("1. Get {}\n", vending_machine.product_name());
-    fmt::print("2. Insert money\n");
-    fmt::print("3. Get return\n");
-    fmt::print("4. Refill stock\n");
-    fmt::print("5. Quit\n");
+    fmt::print("  Press a button [1-5]\n");
+    fmt::print("    1. Get {}\n", vending_machine.product_name());
+    fmt::print("    2. Insert money\n");
+    fmt::print("    3. Get return\n");
+    fmt::print("    4. Refill stock\n");
+    fmt::print("    5. Quit\n");
 
     char ch;
     float money;

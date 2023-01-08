@@ -10,22 +10,24 @@ int main() {
   server->subscribe(user1);
   server->subscribe(user2);
   for (;;) {
-    int in;
-    fmt::print("\nEnter next server state: \n");
+    char in;
+    fmt::print("\nEnter next server state: (or 'q' to quit)\n");
     fmt::print("\t1. Operational State\n");
     fmt::print("\t2. Partially Down State\n");
     fmt::print("\t3. Fully Down State\n");
     std::cin >> in;
     switch (in) {
-    case 1:
+    case '1':
       server->change_state(ServerState::OPERATIONAL);
       break;
-    case 2:
+    case '2':
       server->change_state(ServerState::PARTIALLY_DOWN);
       break;
-    case 3:
+    case '3':
       server->change_state(ServerState::FULLY_DOWN);
       break;
+    case 'q':
+      return 0;
     }
   }
 }
