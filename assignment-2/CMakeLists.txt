@@ -14,6 +14,6 @@ endif()
 find_package(fmt CONFIG REQUIRED)
 
 
-# add_subdirectory(problem-1)
+add_subdirectory(problem-1)
 add_subdirectory(problem-2)
 add_subdirectory(problem-3)

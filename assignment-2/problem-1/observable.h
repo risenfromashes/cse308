@@ -5,7 +5,7 @@
 
 #include "observer.h"
 
-class Observable {
+class Observable : public std::enable_shared_from_this<Observable> {
 public:
   void subscribe(std::shared_ptr<Observer> observer);
   void unsubscribe(std::shared_ptr<Observer> observer);
@@ -13,5 +13,5 @@ public:
   void notify_all();
 
 private:
-  std::vector<std::shared_ptr<Observer>> suscribers_;
+  std::vector<std::weak_ptr<Observer>> suscribers_;
 };

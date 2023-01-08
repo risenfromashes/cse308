@@ -1,4 +1,4 @@
 
 file(GLOB src_files *.h *.cc)
-add_executable(examcontroller ${src_files})
-target_link_libraries(examcontroller  PRIVATE fmt::fmt)
+add_executable(abcserver ${src_files})
+target_link_libraries(abcserver PRIVATE fmt::fmt)
