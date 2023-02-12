@@ -4,6 +4,7 @@ void Coffee::print_description() {
   fmt::print("{} - {} BDT\n", name(), cost());
   fmt::print("Ingredients:\n");
   fmt::print("-------------------------------\n");
+  print_ingredients();
 }
 
 void Coffee::print_ingredients() {
