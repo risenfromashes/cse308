@@ -98,7 +98,7 @@ int main() {
     }
 
     // print the order summary
-    fmt::print("Bill - {} BDT", total_bill);
+    fmt::print("Bill - {} BDT\n", total_bill);
     fmt::print("================================\n\n");
     for (auto &c : orders) {
       c->print_description();
