@@ -12,11 +12,11 @@ std::string_view to_string(EntityType entity) {
   using enum EntityType;
   switch (entity) {
   case COMPANY:
-    return "company";
+    return "Company";
   case MANAGER:
-    return "manager";
+    return "Manager";
   case DEVELOPER:
-    return "developer";
+    return "Developer";
   }
   return "";
 }
