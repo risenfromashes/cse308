@@ -9,8 +9,9 @@ public:
   const static Ingredient cinnamon_powder;
   const static Ingredient chocolate_sauce;
 
-  const char *name() { return name_; }
-  int price() { return price_; }
+  const char *name() const { return name_; }
+  int price() const { return price_; }
+  void print() const;
 
 private:
   Ingredient(const char *name, int price) : name_(name), price_(price) {}

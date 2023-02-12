@@ -4,6 +4,8 @@ class CrewMate {
 public:
   virtual void intersteller_study() = 0;
   virtual void perform_maintenance() = 0;
+
+  virtual ~CrewMate() = default;
 };
 
 class Crew : public CrewMate {
